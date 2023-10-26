@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Hike_App"
+        tools:targetApi="31">
+        <activity
+            android:name=".EditObsActivity"
+            android:exported="false"
+            android:label="Edit Observation"
+            android:parentActivityName=".DetailObs"/>
+        <activity
+            android:name=".DetailObs"
+            android:exported="false"
+            android:label="Detail Observation"
+            android:parentActivityName=".Observations"/>
+        <activity
+            android:name=".Observations"
+            android:exported="true"
+            android:label="Observation"
+            android:parentActivityName=".DetailHike" />
+        <activity
+            android:name=".EditHike"
+            android:exported="true"
+            android:label="Update Hike"
+            android:parentActivityName=".DetailHike" />
+        <activity
+            android:name=".DetailHike"
+            android:exported="false"
+            android:label="Detail Hike"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".AddActivity"
+            android:exported="false"
+            android:label="Add Hike"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="List Hike">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
