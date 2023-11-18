@@ -68,8 +68,8 @@ public class DetailHike extends AppCompatActivity {
                 intent.putExtra("hike_length", String.valueOf(length.getText()));
                 intent.putExtra("hike_date", String.valueOf(date.getText()));
                 intent.putExtra("hike_parking", String.valueOf(isParking));
-                intent.putExtra("hike_level", String.valueOf(name.getText()));
-                intent.putExtra("hike_description", String.valueOf(name.getText()));
+                intent.putExtra("hike_level", String.valueOf(level.getText()));
+                intent.putExtra("hike_description", String.valueOf(description.getText()));
                 startActivity(intent);
             }
         });

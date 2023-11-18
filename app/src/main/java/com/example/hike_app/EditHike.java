@@ -4,14 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class EditHike extends AppCompatActivity {
     private Toolbar toolbar;
@@ -42,6 +46,9 @@ public class EditHike extends AppCompatActivity {
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!validateNameHike() | !validateDate() | !validateLength() | !validateLocation() | !validateLevel()){
+                    return;
+                }
                 DatabaseHelper db = new DatabaseHelper(EditHike.this);
                 hikeName = edit_name.getText().toString().trim();
                 hikeLocation = edit_location.getText().toString().trim();
@@ -52,6 +59,12 @@ public class EditHike extends AppCompatActivity {
                 hikeDescription = edit_description.getText().toString().trim();
 
                 db.updateHikeData(hike_id, hikeName, hikeLocation, Double.parseDouble(hikeLength), hikeDate, is_parking, hikeLevel, hikeDescription);
+            }
+        });
+        edit_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogPickDate();
             }
         });
         getIntentData();
@@ -92,6 +105,71 @@ public class EditHike extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+    private void openDialogPickDate(){
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                edit_date.setText(dayOfMonth +"/"+ (month + 1) +"/"+(year));
+            }
+        }, currentYear, currentMonth, currentDay);
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        datePickerDialog.show();
+    }
+    private boolean validateNameHike() {
+        String nameInput = edit_name.getText().toString().trim();
+        if(nameInput.isEmpty()){
+            edit_name.setError("Name can not be empty");
+            return false;
+        } else {
+            edit_name.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLocation() {
+        String locationInput = edit_location.getText().toString().trim();
+        if (locationInput.isEmpty()) {
+            edit_location.setError("Location can not be empty");
+            return false;
+        } else {
+            edit_location.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLength() {
+        String lengthInput = edit_length.getText().toString().trim();
+        if (lengthInput.isEmpty()) {
+            edit_length.setError("Length can not be empty");
+            return false;
+        } else {
+            edit_length.setError(null);
+            return true;
+        }
+    }
+    private boolean validateDate(){
+        String dateInput = edit_date.getText().toString().trim();
+        if (dateInput.isEmpty()) {
+            edit_date.setError("Date can not be empty");
+            return false;
+        } else {
+            edit_date.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLevel(){
+        String levelInput = edit_level.getText().toString().trim();
+        if (levelInput.isEmpty()) {
+            edit_level.setError("Level can not be empty");
+            return false;
+        } else {
+            edit_level.setError(null);
+            return true;
         }
     }
 }

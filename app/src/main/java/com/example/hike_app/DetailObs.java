@@ -38,8 +38,9 @@ public class DetailObs extends AppCompatActivity {
 
         obsId = getIntent().getStringExtra("obs_id");
         hikeID = getIntent().getStringExtra("hike_id");
-        System.out.println(obsId);
         System.out.println(hikeID);
+        System.out.println(obsId);
+
         if (getIntent().hasExtra("obs_id")) {
             dataObsById(Integer.parseInt(obsId));
             obsName.setText(name);
@@ -53,9 +54,10 @@ public class DetailObs extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailObs.this, EditObsActivity.class);
+                intent.putExtra("hike_id", String.valueOf(hikeID));
                 intent.putExtra("obs_id", String.valueOf(obsId));
                 intent.putExtra("obs_name", String.valueOf(obsName.getText()));
-                intent.putExtra("obs_addedDate", String.valueOf(obsAddedDate.getText()));
+//                intent.putExtra("obs_addedDate", String.valueOf(obsAddedDate.getText()));
                 intent.putExtra("obs_cmt", String.valueOf(obsCmt.getText()));
                 startActivity(intent);
             }
@@ -73,7 +75,7 @@ public class DetailObs extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(this, Observations.class);
+                Intent intent = new Intent(DetailObs.this, Observations.class);
                 intent.putExtra("hike_id", hikeID);
                 startActivity(intent);
                 return true;

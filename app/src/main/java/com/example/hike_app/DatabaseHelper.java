@@ -15,7 +15,7 @@ import com.example.hike_app.models.ObservationsModel;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String DATABASE_NAME = "HikeApp.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_HIKE = "HikeDetail";
     private static final String COLUMN_ID = "hike_id";
@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_PARKING + " BOOL, " +
                 COLUMN_LENGTH + " REAL, " +
                 COLUMN_LEVEL + " TEXT, " +
-                COLUMN_DESCRIPTION + " TEXT);";
+                COLUMN_DESCRIPTION + " BLOB);";
         db.execSQL(queryHike);
 
         String queryObservation = "CREATE TABLE " + TABLE_HIKE_OBSERVATION +

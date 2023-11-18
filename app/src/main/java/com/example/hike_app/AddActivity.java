@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import com.example.hike_app.models.HikeModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 public class AddActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -50,13 +52,12 @@ public class AddActivity extends AppCompatActivity {
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(name.isEm)
-
+                if(!validateNameHike() | !validateDate() | !validateLength() | !validateLocation() | !validateLevel()){
+                    return;
+                }
                 HikeModel hikeModel = new HikeModel(-1, name.getText().toString(), location.getText().toString(), date.getText().toString(), parking.isChecked(), Double.parseDouble(length.getText().toString()), level.getText().toString(), description.getText().toString());
-
                 DatabaseHelper db = new DatabaseHelper(AddActivity.this);
                 db.addHike(hikeModel);
-
                 name.setText("");
                 location.setText("");
                 length.setText("");
@@ -94,7 +95,57 @@ public class AddActivity extends AppCompatActivity {
                 date.setText(String.valueOf(dayOfMonth)+"/"+String.valueOf(month+1)+"/"+String.valueOf(year));
             }
         }, currentYear, currentMonth, currentDay);
-        datePickerDialog.getDatePicker().setMaxDate(calendar.getTimeInMillis());
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
         datePickerDialog.show();
+    }
+    private boolean validateNameHike() {
+        String nameInput = name.getText().toString().trim();
+        if(nameInput.isEmpty()){
+            name.setError("Name can not be empty");
+            return false;
+        } else {
+            name.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLocation() {
+        String locationInput = location.getText().toString().trim();
+        if (locationInput.isEmpty()) {
+            location.setError("Location can not be empty");
+            return false;
+        } else {
+            location.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLength() {
+        String lengthInput = length.getText().toString().trim();
+        if (lengthInput.isEmpty()) {
+            length.setError("Length can not be empty");
+            return false;
+        } else {
+            length.setError(null);
+            return true;
+        }
+    }
+    private boolean validateDate(){
+        String dateInput = date.getText().toString().trim();
+        if (dateInput.isEmpty()) {
+            date.setError("Date can not be empty");
+            return false;
+        } else {
+            date.setError(null);
+            return true;
+        }
+    }
+    private boolean validateLevel(){
+        String levelInput = level.getText().toString().trim();
+        if (levelInput.isEmpty()) {
+            level.setError("Level can not be empty");
+            return false;
+        } else {
+            level.setError(null);
+            return true;
+        }
     }
 }

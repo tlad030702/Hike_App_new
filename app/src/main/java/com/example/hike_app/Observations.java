@@ -36,9 +36,12 @@ public class Observations extends AppCompatActivity {
     RecyclerView recyclerView;
     ImageView emptyData_image;
     TextView emptyData;
+    EditText addObs, addTimeObs, addCmtObs;
+    Button addObsButton, cancelBtn;
     CustomAdapterForObs customAdapterForObs;
     ArrayList<ObservationsModel> observationsModels = new ArrayList<>();
     String hikeId;
+    Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,15 @@ public class Observations extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24);
+
+        dialog = new Dialog(Observations.this);
+        dialog.setContentView(R.layout.dialog_add_observation);
+
+        addObs = dialog.findViewById(R.id.add_obs_txt);
+        addTimeObs = dialog.findViewById(R.id.add_time_txt);
+        addCmtObs = dialog.findViewById(R.id.add_comment_txt);
+        addObsButton = dialog.findViewById(R.id.add_obs);
+        cancelBtn = dialog.findViewById(R.id.cancel_btn);
 
         addObsBtn = findViewById(R.id.add_obs_btn);
         recyclerView = findViewById(R.id.listObservation);
@@ -69,9 +81,6 @@ public class Observations extends AppCompatActivity {
         });
     }
     private void openAddObservation(int gravity){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_add_observation);
-
         Window window = dialog.getWindow();
         if (window == null){ return; }
 
@@ -88,40 +97,14 @@ public class Observations extends AppCompatActivity {
             dialog.setCancelable(false);
         }
 
-        EditText addObs, addTimeObs, addCmtObs;
-        Button addObsButton, cancelBtn;
-
-        addObs = dialog.findViewById(R.id.add_obs_txt);
-        addTimeObs = dialog.findViewById(R.id.add_time_txt);
-        addCmtObs = dialog.findViewById(R.id.add_comment_txt);
-        addObsButton = dialog.findViewById(R.id.add_obs);
-        cancelBtn = dialog.findViewById(R.id.cancel_btn);
-
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
-
-        if(currentHour < 10){
-            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + "0" + currentHour + ":" + currentMinute;
-            addTimeObs.setText(addedDate);
-        } else if (currentHour < 10 && currentMinute < 10) {
-            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + "0" + currentHour + ":0" + currentMinute;
-            addTimeObs.setText(addedDate);
-        } else if (currentMinute < 10) {
-            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + currentHour + ":0" + currentMinute;
-            addTimeObs.setText(addedDate);
-        } else {
-            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + currentHour + ":" + currentMinute;
-            addTimeObs.setText(addedDate);
-        }
-
+        getDateTimeNow();
 
         addObsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!validateObservation() | !validateAddedDate()){
+                    return;
+                }
                 ObservationsModel obsModels = new ObservationsModel(-1, addObs.getText().toString(), addTimeObs.getText().toString(), addCmtObs.getText().toString(), Integer.parseInt(hikeId));
                 DatabaseHelper db = new DatabaseHelper(Observations.this);
                 db.addObservation(hikeId, obsModels);
@@ -169,6 +152,28 @@ public class Observations extends AppCompatActivity {
             }
         }
     }
+    private void getDateTimeNow(){
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+
+        if(currentHour < 10){
+            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + "0" + currentHour + ":" + currentMinute;
+            addTimeObs.setText(addedDate);
+        } else if (currentHour < 10 && currentMinute < 10) {
+            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + "0" + currentHour + ":0" + currentMinute;
+            addTimeObs.setText(addedDate);
+        } else if (currentMinute < 10) {
+            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + currentHour + ":0" + currentMinute;
+            addTimeObs.setText(addedDate);
+        } else {
+            String addedDate = currentDay + "/" + (currentMonth+1) + "/" + currentYear + " " + currentHour + ":" + currentMinute;
+            addTimeObs.setText(addedDate);
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -181,5 +186,24 @@ public class Observations extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    private boolean validateObservation() {
+        String nameInput = addObs.getText().toString().trim();
+        if(nameInput.isEmpty()){
+            addObs.setError("Observation's content can not be empty");
+            return false;
+        } else {
+            addObs.setError(null);
+            return true;
+        }
+    }
+    private boolean validateAddedDate() {
+        String locationInput = addTimeObs.getText().toString().trim();
+        if (locationInput.isEmpty()) {
+            addTimeObs.setError("Location can not be empty");
+            return false;
+        } else {
+            addTimeObs.setError(null);
+            return true;
+        }
+    }
 }

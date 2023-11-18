@@ -77,8 +77,9 @@
                     <TextView
                         android:id="@+id/hike_length_edit"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="3"
+                        android:gravity="center|start"
                         android:text="Hike length (km)"
                         android:textSize="20dp" />
 
@@ -87,6 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="TextView"
+                        android:inputType="number|numberDecimal"
                         android:layout_weight="7"
                         android:textColor="@color/design_default_color_primary_dark"
                         android:textSize="20dp"
@@ -118,6 +120,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
                         android:text="TextView"
+                        android:focusable="false"
+                        android:inputType="date"
                         android:textColor="@color/design_default_color_primary_dark"
                         android:textSize="20dp" />
 
